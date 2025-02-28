@@ -82,6 +82,10 @@ scriptForm.on("submit", async function (e) {
   const jsonString = JSON.stringify(screenplayJSON, null, 2);
   const pretty = syntaxHighlight(jsonString);
   $("#jsonView").html(pretty);
+
+  $(".tabs").removeClass("hidden");
+  $("#tab1").removeClass("hidden");
+  $("#tab2").removeClass("hidden");
 });
 
 const populateCharacterDropDown = () => {
