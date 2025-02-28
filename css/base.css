@@ -58,6 +58,7 @@ button:hover {
 }
 
 .extract-container {
+    margin: auto;
     margin-top: 20px;
     background-color: #f9f9f9;
     padding: 15px;
@@ -118,4 +119,71 @@ button:hover {
     text-align: left;
     margin: -8px 0;
     color: #777;
+}
+
+/* Styles for the tab headers container */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1rem;
+}
+
+/* Styles for individual tabs */
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #eee;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    margin-right: 2px;
+}
+
+/* Active tab style */
+.tab.active {
+    background: #fff;
+    font-weight: bold;
+}
+
+/* Styles for tab content areas */
+.tab-content {
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+
+/* Class to hide inactive tab content */
+.hidden {
+    display: none;
+}
+
+/*Syntax highlighting for JSON*/
+#jsonView {
+    background: #2e3440;
+    color: #d8dee9;
+    padding: 20px;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 600px;
+    /* Enable soft word wrap */
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 800px;
+}
+
+/* Color coding for JSON */
+.string {
+    color: #a3be8c;
+}
+.number {
+    color: #b48ead;
+}
+.boolean {
+    color: #d08770;
+}
+.null {
+    color: #81a1c1;
+}
+.key {
+    color: #88c0d0;
 }

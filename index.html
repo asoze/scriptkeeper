@@ -24,22 +24,28 @@
                         <option value="" disabled selected>
                             Choose a character
                         </option>
-                        <option value="character1">Character 1</option>
-                        <option value="character2">Character 2</option>
-                        <option value="character3">Character 3</option>
-                        <!-- Add more characters as needed -->
                     </select>
                 </div>
                 <button type="submit">Submit</button>
             </form>
-
-            <button id="exportBtn">EXPORT</button>
         </div>
 
-        <div class="extract-container">
-            <pre id="extractPane"></pre>
+        <div class="tabs">
+            <div class="tab active" data-tab="tab1">Script View</div>
+            <div class="tab" data-tab="tab2">JSON View</div>
+        </div>
+
+        <div id="tab1" class="tab-content">
+            <div class="extract-container">
+                <button id="exportBtn">EXPORT</button>
+                <pre id="extractPane"></pre>
+            </div>
+        </div>
+        <div id="tab2" class="tab-content hidden">
+            <pre id="jsonView"></pre>
         </div>
 
         <script src="js/readScript.js"></script>
+        <script src="js/tabStuff.js"></script>
     </body>
 </html>

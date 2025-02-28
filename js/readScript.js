@@ -4,7 +4,8 @@ const scriptFileInput = $("#scriptFile");
 const characterSelect = $("#characterSelect");
 const extractedTextContainer = $("#extractPane");
 
-const characterNames = [];
+//Populate these before export? Or just go line-by-line?
+const characterNames = new Set();
 const parentheticals = [];
 const sceneHeadings = [];
 const dialogs = [];
@@ -19,11 +20,6 @@ scriptForm.on("submit", async function (e) {
     return;
   }
 
-  // const selectedCharacter = characterSelect.val();
-  // if (!selectedCharacter) {
-  //   alert("Please select your character.");
-  //   return;
-  // }
   const selectedCharacter = "Artie";
 
   // Read the PDF file as an ArrayBuffer
@@ -80,7 +76,23 @@ scriptForm.on("submit", async function (e) {
 
   // Display extracted text
   extractedTextContainer.html(finale);
+  populateCharacterDropDown();
+
+  const screenplayJSON = buildScreenplayJSON();
+  const jsonString = JSON.stringify(screenplayJSON, null, 2);
+  const pretty = syntaxHighlight(jsonString);
+  $("#jsonView").html(pretty);
 });
+
+const populateCharacterDropDown = () => {
+  const uniqueCharNames = [...characterNames];
+  let nameOptions = "";
+
+  $.each(uniqueCharNames, function (index, value) {
+    nameOptions += "<option value='" + value + "'>" + value + "</option>";
+  });
+  characterSelect.append(nameOptions);
+};
 
 const cleanExtractedText = (text) => {
   // Step 1: Split text into lines
@@ -118,7 +130,8 @@ const identifyCharacterNames = (text) => {
 
     // Confirm it's a character name if it's followed by an indented dialogue line
     if (isCharacterName && nextLineIndented) {
-      characterNames.push(line.trim());
+      characterNames.add(line.trim());
+
       return `<span class="character-name">${line.trim()}</span>`;
     }
     return line;
@@ -164,11 +177,6 @@ const identifyParentheticals = (text) => {
     const isAboveDialogue =
       (lines[index + 1] && lines[index + 1].trim().length > 0) ||
       (lines[index + 2] && lines[index + 2].trim().length > 0);
-
-    if (isParenthetical) {
-      console.log("UNDER", isUnderCharacterName);
-      console.log("ABOVE", isAboveDialogue);
-    }
 
     // Confirm it's a parenthetical based on position
     if (isParenthetical && isAboveDialogue) {
@@ -394,7 +402,7 @@ function exportToJson() {
   // Create a temporary anchor element.
   const a = document.createElement("a");
   a.href = url;
-  a.download = "screenplay.json"; // Filename for the downloaded JSON file.
+  a.download = "screenplay_export.json"; // Filename for the downloaded JSON file.
 
   // Append the anchor, trigger the download, and remove the anchor.
   document.body.appendChild(a);
@@ -407,3 +415,31 @@ function exportToJson() {
 
 // Example usage: attach the exportToJson function to a button click.
 $("#exportBtn").on("click", exportToJson);
+
+function syntaxHighlight(json) {
+  if (typeof json !== "string") {
+    json = JSON.stringify(json, undefined, 2);
+  }
+  json = json
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  return json.replace(
+    /("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+    function (match) {
+      let cls = "number";
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = "key";
+        } else {
+          cls = "string";
+        }
+      } else if (/true|false/.test(match)) {
+        cls = "boolean";
+      } else if (/null/.test(match)) {
+        cls = "null";
+      }
+      return `<span class="${cls}">${match}</span>`;
+    },
+  );
+}
